@@ -11,6 +11,11 @@ import android.location.Location
  */
 object TrackerRepo {
 
+    // Since the goal of this test project is to update an existing application with minimal changes,
+    // I decided not to add any third-party libraries. But in a real application I would use kotlin Flow.
+    var onSpeedUpdated: ((speed: Float) -> Unit)? = null
+    var onSessionEnded: ((sessionId: String?) -> Unit)? = null
+
     /**
      * First tracked location
      */
@@ -79,6 +84,7 @@ object TrackerRepo {
     @JvmStatic
     fun addSpeed(speed: Float) {
         speedRecords.add(speed)
+        onSpeedUpdated?.invoke(speed)
     }
 
     /**
@@ -149,7 +155,9 @@ object TrackerRepo {
                 it.close()
             }
         }
-
+        onSessionEnded?.invoke(session?.id)
+        onSpeedUpdated = null
+        onSessionEnded = null
         // Resetting the session fields
         session = null
         startLocation = null

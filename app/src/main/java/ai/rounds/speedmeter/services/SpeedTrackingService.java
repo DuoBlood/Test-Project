@@ -43,15 +43,6 @@ public class SpeedTrackingService extends Service implements com.google.android.
 
     private NotificationManager notificationManager;
 
-    public static final String EXTRA_PROVIDER = "ai.rounds.speedmeter.SpeedTrackingService.extra_provider";
-    public static final String EXTRA_SESSION_ID = "ai.rounds.speedmeter.SpeedTrackingService.extra_session_id";
-
-    public static final String EXTRA_SPEED = "ai.rounds.speedmeter.SpeedTrackingService.extra_speed";
-
-    public static final String INTENT_ACTION_SPEED_UPDATE = "ai.rounds.speedmeter.SpeedTrackingService.speed_update";
-
-    public static final String INTENT_ACTION_STOP_MOVING = "ai.rounds.speedmeter.SpeedTrackingService.stop_moving";
-
     private static final int ACCURACY_DELTA_MAX = 200;
 
     private static final long TIME_INTERVAL_FASTEST = TimeUnit.SECONDS.toMillis(1);// 1 second
@@ -90,15 +81,9 @@ public class SpeedTrackingService extends Service implements com.google.android.
             googleApiClient.disconnect();
         }
 
-        String sessionId = TrackerRepo.getCurrentSessionId();
-
         if (TrackerRepo.isInitialized()) {
             TrackerRepo.finalizeSession();
         }
-
-        Intent stopIntent = new Intent(INTENT_ACTION_STOP_MOVING);
-        stopIntent.putExtra(EXTRA_SESSION_ID, sessionId);
-        sendBroadcast(stopIntent);
 
         super.onDestroy();
     }
@@ -140,11 +125,6 @@ public class SpeedTrackingService extends Service implements com.google.android.
                 TrackerRepo.addDistance(location.distanceTo(lastLocation));
                 TrackerRepo.addSpeed(speed);
                 TrackerRepo.addLastLocation(location);
-
-                Intent speedUpdateIntent = new Intent(INTENT_ACTION_SPEED_UPDATE);
-                speedUpdateIntent.putExtra(EXTRA_SPEED, speed);
-                speedUpdateIntent.putExtra(EXTRA_PROVIDER, location.getProvider() + " " + Math.round(location.getSpeed()));
-                sendBroadcast(speedUpdateIntent);
             }
 
             lastLocation = location;

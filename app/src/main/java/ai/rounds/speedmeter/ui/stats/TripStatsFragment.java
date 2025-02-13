@@ -8,9 +8,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import ai.rounds.speedmeter.R;
 import ai.rounds.speedmeter.db.access.SessionAccess;
+import ai.rounds.speedmeter.ui.speed.SpeedViewViewModel;
 import ai.rounds.speedmeter.utils.Formatter;
 import ai.rounds.speedmeter.models.Session;
 
@@ -26,6 +28,8 @@ public class TripStatsFragment extends Fragment {
 
     private View mRootView;
 
+    private TripStatsViewModel viewModel;
+
     public TripStatsFragment() {
     }
 
@@ -33,38 +37,45 @@ public class TripStatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_summary, container, false);
+
+        viewModel = new ViewModelProvider
+                .AndroidViewModelFactory(getActivity().getApplication())
+                .create(TripStatsViewModel.class);
+
         init();
+        observeData();
         return mRootView;
     }
 
-    private void init() {
-
-        Session session;
-        SessionAccess access = new SessionAccess(getActivity());
-        access.openToRead();
-
-        if (getActivity().getIntent().hasExtra(TripStatsActivity.EXTRA_SESSION_ID)) {
-            session = access.getTrackingSessionById(getActivity().getIntent().getStringExtra(TripStatsActivity.EXTRA_SESSION_ID));
-        } else {
-            session = access.getLastTrackingSession();
-        }
-
-        access.close();
-
-        if (session == null) {
+    private void observeData() {
+        viewModel.getCloseEvent().observe(this, unit -> {
             getActivity().finish();
-            return;
-        }
+        });
+        viewModel.getSessionStartLd().observe(this, txt -> {
+            ((TextView) mRootView.findViewById(R.id.txtv_session_start)).setText(txt);
+        });
+        viewModel.getSessionEndLd().observe(this, txt -> {
+            ((TextView) mRootView.findViewById(R.id.txtv_session_end)).setText(txt);
+        });
+        viewModel.getSessionDurationLd().observe(this, txt -> {
+            ((TextView) mRootView.findViewById(R.id.txtv_session_duration)).setText(txt);
+        });
+        viewModel.getSessionDistanceLd().observe(this, txt -> {
+            ((TextView) mRootView.findViewById(R.id.txtv_session_distance)).setText(txt);
+        });
+        viewModel.getSessionSpeedLd().observe(this, txt -> {
+            ((TextView) mRootView.findViewById(R.id.txtv_session_speed)).setText(txt);
+        });
+        viewModel.getSessionStartLocationLd().observe(this, txt -> {
+            ((TextView) mRootView.findViewById(R.id.txtv_session_start_location)).setText(txt);
+        });
+        viewModel.getSessionEndLocationLd().observe(this, txt -> {
+            ((TextView) mRootView.findViewById(R.id.txtv_session_end_location)).setText(txt);
+        });
+    }
 
-        DateFormat dateFormat = new SimpleDateFormat("kk:mm:ss", Locale.FRANCE);
 
-        ((TextView) mRootView.findViewById(R.id.txtv_session_start)).setText(dateFormat.format(new Date(session.getStartTime())));
-        ((TextView) mRootView.findViewById(R.id.txtv_session_end)).setText(dateFormat.format(new Date(session.getEndTime())));
-        ((TextView) mRootView.findViewById(R.id.txtv_session_duration)).setText(Formatter.getFormattedTime(session.getEndTime() - session.getStartTime()));
-        ((TextView) mRootView.findViewById(R.id.txtv_session_distance)).setText(Formatter.getFormattedDistance(session.getDistance()));
-        ((TextView) mRootView.findViewById(R.id.txtv_session_speed)).setText(Formatter.getKilometersPerHour(session.getAverageSpeed()));
-        ((TextView) mRootView.findViewById(R.id.txtv_session_start_location)).setText(Formatter.getFormattedCoordinates(session.getStartLatitude(), session.getStartLongitude()));
-        ((TextView) mRootView.findViewById(R.id.txtv_session_end_location)).setText(Formatter.getFormattedCoordinates(session.getEndLatitude(), session.getEndLongitude()));
-
+    private void init() {
+        viewModel.loadSession(getActivity().getIntent().getStringExtra(TripStatsActivity.EXTRA_SESSION_ID));
     }
 }
