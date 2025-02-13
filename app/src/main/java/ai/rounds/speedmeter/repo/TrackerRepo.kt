@@ -3,12 +3,24 @@ package ai.rounds.speedmeter.repo
 import ai.rounds.speedmeter.db.access.SessionAccess
 import ai.rounds.speedmeter.models.Session
 import android.content.Context
+import android.location.Location
 
 
 /**
  * Class dedicated to the speed tracking
  */
 object TrackerRepo {
+
+    /**
+     * First tracked location
+     */
+    private var startLocation: Location? = null
+
+    /**
+     * Last tracked location
+     */
+    private var lastLocation: Location? = null
+
     /**
      * List of all recorded distances during session.
      */
@@ -78,6 +90,17 @@ object TrackerRepo {
         get() = speedRecords.average().toFloat()
 
     /**
+     * Adds the last location for the session
+     *
+     * @param lastLocation Last tracked location.
+     */
+    @JvmStatic
+    fun addLastLocation(lastLocation: Location) {
+        if (startLocation == null) startLocation = lastLocation
+        this.lastLocation = lastLocation
+    }
+
+    /**
      * Adds a distance to the recorded distances for the session
      *
      * @param distance Distance to add to records
@@ -115,6 +138,10 @@ object TrackerRepo {
             this.endTime = endTime
             this.averageSpeed = TrackerRepo.averageSpeed
             this.distance = totalDistance
+            this.startLatitude = startLocation?.latitude ?: 0.toDouble()
+            this.startLongitude = startLocation?.longitude ?: 0.toDouble()
+            this.endLatitude = lastLocation?.latitude ?: 0.toDouble()
+            this.endLongitude = lastLocation?.longitude ?: 0.toDouble()
             // Writing the session to the database
             sessionAccess?.let {
                 it.openToWrite()
@@ -125,6 +152,8 @@ object TrackerRepo {
 
         // Resetting the session fields
         session = null
+        startLocation = null
+        lastLocation = null
         speedRecords.clear()
         distanceRecords.clear()
     }

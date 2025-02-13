@@ -139,6 +139,7 @@ public class SpeedTrackingService extends Service implements com.google.android.
 
                 TrackerRepo.addDistance(location.distanceTo(lastLocation));
                 TrackerRepo.addSpeed(speed);
+                TrackerRepo.addLastLocation(location);
 
                 Intent speedUpdateIntent = new Intent(INTENT_ACTION_SPEED_UPDATE);
                 speedUpdateIntent.putExtra(EXTRA_SPEED, speed);

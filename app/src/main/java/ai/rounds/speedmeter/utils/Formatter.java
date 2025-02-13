@@ -57,4 +57,8 @@ public class Formatter {
 
         return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
     }
+
+    public static String getFormattedCoordinates(Double latitude, Double longitude) {
+        return String.format(Locale.getDefault(), "%.6f, %.6f", latitude, longitude);
+    }
 }

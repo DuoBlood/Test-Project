@@ -85,4 +85,32 @@
 
     </LinearLayout>
 
+    <LinearLayout style="@style/AppTheme.Summary.Section">
+
+        <TextView
+            style="@style/AppTheme.Summary.Section.Title"
+            android:fontFamily="@font/digital_7_regular"
+            android:text="@string/summary_section_start_location" />
+
+        <TextView
+            android:id="@+id/txtv_session_start_location"
+            android:fontFamily="@font/digital_7_regular"
+            style="@style/AppTheme.Summary.Section.Data"/>
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/AppTheme.Summary.Section">
+
+        <TextView
+            style="@style/AppTheme.Summary.Section.Title"
+            android:fontFamily="@font/digital_7_regular"
+            android:text="@string/summary_section_end_location" />
+
+        <TextView
+            android:id="@+id/txtv_session_end_location"
+            android:fontFamily="@font/digital_7_regular"
+            style="@style/AppTheme.Summary.Section.Data"/>
+
+    </LinearLayout>
+
 </LinearLayout>

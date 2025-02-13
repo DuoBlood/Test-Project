@@ -27,6 +27,22 @@ public class Session {
      * The total distance of the session
      */
     private float averageSpeed;
+    /**
+     *  The latitude on witch the session started.
+     */
+    private double startLatitude;
+    /**
+     * The longitude on witch the session started.
+     */
+    private double startLongitude;
+    /**
+     *  The latitude on witch the session ended.
+     */
+    private double endLatitude;
+    /**
+     * The longitude on witch the session ended.
+     */
+    private double endLongitude;
 
     /**
      * Constructor
@@ -111,6 +127,71 @@ public class Session {
     }
 
     /**
+     * Gets the session's start latitude
+     * @return the session`s start latitude
+     */
+    public double getStartLatitude() {
+        return startLatitude;
+    }
+
+    /**
+     * Sets the session's start latitude
+     * @param startLatitude The starting latitude to be set
+     */
+    public void setStartLatitude(double startLatitude) {
+        this.startLatitude = startLatitude;
+    }
+
+    /**
+     * Gets the session's start longitude
+     * @return the session`s start longitude
+     */
+    public double getStartLongitude() {
+        return startLongitude;
+    }
+
+    /**
+     * Sets the session's start longitude
+     * @param startLongitude The starting longitude to be set
+     */
+    public void setStartLongitude(double startLongitude) {
+        this.startLongitude = startLongitude;
+    }
+
+    /**
+     * Gets the session's end latitude
+     * @return the session`s end latitude
+     */
+    public double getEndLatitude() {
+        return endLatitude;
+    }
+
+    /**
+     * Sets the session's end latitude
+     * @param endLatitude The ending latitude to be set
+     */
+    public void setEndLatitude(double endLatitude) {
+        this.endLatitude = endLatitude;
+    }
+
+    /**
+     * Gets the session's edn longitude
+     * @return the session`s end longitude
+     */
+    public double getEndLongitude() {
+        return endLongitude;
+    }
+
+
+    /**
+     * Sets the session's end longitude
+     * @param endLongitude The ending longitude to be set
+     */
+    public void setEndLongitude(double endLongitude) {
+        this.endLongitude = endLongitude;
+    }
+
+    /**
      * Sets the session's average speed
      *
      * @param averageSpeed The end timestamp to be set
@@ -127,6 +208,8 @@ public class Session {
                 ", mEndTime=" + endTime +
                 ", mDistance=" + distance +
                 ", mAverageSpeed=" + averageSpeed +
+                ", startLocation=" + startLatitude + " " + startLongitude +
+                ", endLocation=" + endLatitude + " " + endLongitude +
                 '}';
     }
 }

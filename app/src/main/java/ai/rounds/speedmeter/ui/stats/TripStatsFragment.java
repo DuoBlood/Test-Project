@@ -63,6 +63,8 @@ public class TripStatsFragment extends Fragment {
         ((TextView) mRootView.findViewById(R.id.txtv_session_duration)).setText(Formatter.getFormattedTime(session.getEndTime() - session.getStartTime()));
         ((TextView) mRootView.findViewById(R.id.txtv_session_distance)).setText(Formatter.getFormattedDistance(session.getDistance()));
         ((TextView) mRootView.findViewById(R.id.txtv_session_speed)).setText(Formatter.getKilometersPerHour(session.getAverageSpeed()));
+        ((TextView) mRootView.findViewById(R.id.txtv_session_start_location)).setText(Formatter.getFormattedCoordinates(session.getStartLatitude(), session.getStartLongitude()));
+        ((TextView) mRootView.findViewById(R.id.txtv_session_end_location)).setText(Formatter.getFormattedCoordinates(session.getEndLatitude(), session.getEndLongitude()));
 
     }
 }

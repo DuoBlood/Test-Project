@@ -29,7 +29,11 @@ public class SessionAccess extends DatabaseAccess {
                 + DbWrapper.SessionEntry.COLUMN_NAME_START_TIME + ", "
                 + DbWrapper.SessionEntry.COLUMN_NAME_END_TIME + ", "
                 + DbWrapper.SessionEntry.COLUMN_NAME_DISTANCE + ", "
-                + DbWrapper.SessionEntry.COLUMN_NAME_AVERAGE_SPEED
+                + DbWrapper.SessionEntry.COLUMN_NAME_AVERAGE_SPEED + ", "
+                + DbWrapper.SessionEntry.COLUMN_NAME_START_LATITUDE + ", "
+                + DbWrapper.SessionEntry.COLUMN_NAME_START_LONGITUDE + ", "
+                + DbWrapper.SessionEntry.COLUMN_NAME_END_LATITUDE + ", "
+                + DbWrapper.SessionEntry.COLUMN_NAME_END_LONGITUDE
                 + " FROM " + DbWrapper.SessionEntry.TABLE_NAME
                 + " ORDER BY  " + DbWrapper.SessionEntry.COLUMN_NAME_START_TIME + " DESC "
                 + " LIMIT 1 ;";
@@ -58,7 +62,11 @@ public class SessionAccess extends DatabaseAccess {
                 + DbWrapper.SessionEntry.COLUMN_NAME_START_TIME + ", "
                 + DbWrapper.SessionEntry.COLUMN_NAME_END_TIME + ", "
                 + DbWrapper.SessionEntry.COLUMN_NAME_DISTANCE + ", "
-                + DbWrapper.SessionEntry.COLUMN_NAME_AVERAGE_SPEED
+                + DbWrapper.SessionEntry.COLUMN_NAME_AVERAGE_SPEED + ", "
+                + DbWrapper.SessionEntry.COLUMN_NAME_START_LATITUDE + ", "
+                + DbWrapper.SessionEntry.COLUMN_NAME_START_LONGITUDE + ", "
+                + DbWrapper.SessionEntry.COLUMN_NAME_END_LATITUDE + ", "
+                + DbWrapper.SessionEntry.COLUMN_NAME_END_LONGITUDE
                 + " FROM " + DbWrapper.SessionEntry.TABLE_NAME
                 + " WHERE " + DbWrapper.SessionEntry.COLUMN_NAME_ID + " = \"" + id + "\" "
                 + " ORDER BY  " + DbWrapper.SessionEntry.COLUMN_NAME_START_TIME + " DESC "
@@ -90,6 +98,10 @@ public class SessionAccess extends DatabaseAccess {
         values.put(DbWrapper.SessionEntry.COLUMN_NAME_END_TIME, mSession.getEndTime());
         values.put(DbWrapper.SessionEntry.COLUMN_NAME_DISTANCE, mSession.getDistance());
         values.put(DbWrapper.SessionEntry.COLUMN_NAME_AVERAGE_SPEED, mSession.getAverageSpeed());
+        values.put(DbWrapper.SessionEntry.COLUMN_NAME_START_LATITUDE, mSession.getStartLatitude());
+        values.put(DbWrapper.SessionEntry.COLUMN_NAME_START_LONGITUDE, mSession.getStartLongitude());
+        values.put(DbWrapper.SessionEntry.COLUMN_NAME_END_LATITUDE, mSession.getEndLatitude());
+        values.put(DbWrapper.SessionEntry.COLUMN_NAME_END_LONGITUDE, mSession.getEndLongitude());
 
         db.replace(DbWrapper.SessionEntry.TABLE_NAME, null, values);
     }
@@ -111,6 +123,10 @@ public class SessionAccess extends DatabaseAccess {
 
         session.setDistance(cursor.getFloat(cursor.getColumnIndex(DbWrapper.SessionEntry.COLUMN_NAME_DISTANCE)));
         session.setAverageSpeed(cursor.getFloat(cursor.getColumnIndex(DbWrapper.SessionEntry.COLUMN_NAME_AVERAGE_SPEED)));
+        session.setStartLatitude(cursor.getDouble(cursor.getColumnIndex(DbWrapper.SessionEntry.COLUMN_NAME_START_LATITUDE)));
+        session.setStartLongitude(cursor.getDouble(cursor.getColumnIndex(DbWrapper.SessionEntry.COLUMN_NAME_START_LONGITUDE)));
+        session.setEndLatitude(cursor.getDouble(cursor.getColumnIndex(DbWrapper.SessionEntry.COLUMN_NAME_END_LATITUDE)));
+        session.setEndLongitude(cursor.getDouble(cursor.getColumnIndex(DbWrapper.SessionEntry.COLUMN_NAME_END_LONGITUDE)));
 
         return session;
     }
