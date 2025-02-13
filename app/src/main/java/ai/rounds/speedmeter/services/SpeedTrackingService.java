@@ -85,6 +85,7 @@ public class SpeedTrackingService extends Service implements com.google.android.
     public void onDestroy() {
         Log.i("dev", "SpeedTrackingService stopped.");
 
+        stopLocationUpdates();
         if (googleApiClient.isConnected()) {
             googleApiClient.disconnect();
         }

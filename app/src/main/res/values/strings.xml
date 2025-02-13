@@ -12,6 +12,8 @@
     <string name="summary_section_title_speed">Average speed</string>
     <string name="location_explanation_title">Location permission</string>
     <string name="location_explanation_msg">All speed calculations performed by the app are based on data retrieved by your device\'s GPS. That\'s why you need to allow the app to use GPS.</string>
+    <string name="notification_explanation_title">Notification permission</string>
+    <string name="notification_explanation_msg">We use notifications to keep you updated and ensure you stay informed about real-time tracking, alerts, and important updates. Please allow notifications to stay in the loop.</string>
     <string name="gps_mandatory_title">GPS activation</string>
     <string name="gps_mandatory_msg">You need to enable your GPS to use this feature.</string>
     <string name="error">Error</string>

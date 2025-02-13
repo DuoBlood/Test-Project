@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class SpeedViewFragment extends Fragment {
 
     public static final int LOCATION_PERMISSION_REQUEST_ID = 0x56;
+    public static final int NOTIFICATION_PERMISSION_REQUEST_ID = 0x57;
     private FloatingActionButton toggleTrackingBtn;
     private LocationManager locationManager;
     private SpeedMeterView speedMeterView;
@@ -50,12 +52,18 @@ public class SpeedViewFragment extends Fragment {
         return rootView;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
         if (speedTrackingReceiver != null) {
-            getActivity().registerReceiver(speedTrackingReceiver, new IntentFilter(SpeedTrackingService.INTENT_ACTION_SPEED_UPDATE));
-            getActivity().registerReceiver(speedTrackingReceiver, new IntentFilter(SpeedTrackingService.INTENT_ACTION_STOP_MOVING));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                getActivity().registerReceiver(speedTrackingReceiver, new IntentFilter(SpeedTrackingService.INTENT_ACTION_SPEED_UPDATE), Context.RECEIVER_EXPORTED);
+                getActivity().registerReceiver(speedTrackingReceiver, new IntentFilter(SpeedTrackingService.INTENT_ACTION_STOP_MOVING), Context.RECEIVER_EXPORTED);
+            } else {
+                getActivity().registerReceiver(speedTrackingReceiver, new IntentFilter(SpeedTrackingService.INTENT_ACTION_SPEED_UPDATE));
+                getActivity().registerReceiver(speedTrackingReceiver, new IntentFilter(SpeedTrackingService.INTENT_ACTION_STOP_MOVING));
+            }
         }
         if (SpeedTrackingService.isRunning(getActivity())) {
             toggleTrackingBtn.setImageResource(R.drawable.icon_stop);
@@ -84,14 +92,18 @@ public class SpeedViewFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (PermissionHelper.hasLocationPermission(getActivity())) {
-                    if (isGPSEnabled()) {
-                        if (!SpeedTrackingService.isRunning(getActivity())) {
-                            startTracking();
+                    if (PermissionHelper.hasNotificationPermission(getActivity())) {
+                        if (isGPSEnabled()) {
+                            if (!SpeedTrackingService.isRunning(getActivity())) {
+                                startTracking();
+                            } else {
+                                stopTracking();
+                            }
                         } else {
-                            stopTracking();
+                            showGPSMandatoryAlert();
                         }
                     } else {
-                        showGPSMandatoryAlert();
+                        showNotificationPermissionExplanation();
                     }
                 } else {
                     showLocationPermissionExplanation();
@@ -132,6 +144,20 @@ public class SpeedViewFragment extends Fragment {
                 .show();
     }
 
+    private void showNotificationPermissionExplanation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle(R.string.notification_explanation_title)
+                .setMessage(R.string.notification_explanation_msg)
+                .setNeutralButton(R.string.understood, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PermissionHelper.requestNotificationPermission(getActivity(), NOTIFICATION_PERMISSION_REQUEST_ID);
+                    }
+                })
+                .show();
+    }
+
     private void showGPSMandatoryAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -155,7 +181,18 @@ public class SpeedViewFragment extends Fragment {
         if (requestCode == LOCATION_PERMISSION_REQUEST_ID
                 && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+            if (PermissionHelper.hasNotificationPermission(getActivity())) {
+                if (isGPSEnabled()) {
+                    startTracking();
+                } else {
+                    showGPSMandatoryAlert();
+                }
+            } else {
+                showNotificationPermissionExplanation();
+            }
+        } else if (requestCode == NOTIFICATION_PERMISSION_REQUEST_ID
+                && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (isGPSEnabled()) {
                 startTracking();
             } else {
